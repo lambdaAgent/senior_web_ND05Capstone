@@ -1,0 +1,10 @@
+body {
+  margin-top: 70px;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.no_active:active{
+	border: none !important;
+	color: none !important;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "udacity_senior_frontend_capstone",
+  "version": "1.0.0",
+  "description": "decsription",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vdj4y/senior_web_ND05Capstone.git"
+  },
+  "keywords": [
+    "capstone",
+    "udacity",
+    "webspeech",
+    "Vidy"
+  ],
+  "author": "Vidy Alfredo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vdj4y/senior_web_ND05Capstone/issues"
+  },
+  "homepage": "https://github.com/vdj4y/senior_web_ND05Capstone#readme"
+}
