@@ -3,12 +3,38 @@ const $ = require("jquery");
 
 import { Link , browserHistory} from 'react-router';
 
-var currentUrl=""
+/*
+  this navbar can contain three child components:
+  Elements:
+  =========
+  1. LBSymbol = LeftBar element => onClick will show LeftCollapsed (a dropdown menu on left)
+  2. NavHeader = center element
+  3. RBSymbol = RightBar element => onClick will show RightCollapsed (a dropdown menu on left)
+
+  State:
+  =====
+  This component will not maintain which collapsedMenu is visible, 
+  the parent of this component will maintain the controls.
+  1. props.showRightMenu  --> if true show rightmenu, if false hide rightMenu
+  2. props.showLeftMenu  --> if true show leftMenu, if false hide leftMenu
+
+  onClick:
+  ========
+  LBAction --> controls click handler of leftElement
+  RBAction --> controls click handler of rightElement
+
+  style:
+  ======
+  RBStyle --> will override the style of rightElement, if the new style match the default style
+  LBStyle --> will override the style of leftElement, if the new style match the default style
+
+*/
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {width: 0, url: ""};
-    }   
+    }  
+
     render() {
         const self = this; //don't Delete this
         const showBackButton = this.props.showBackButton;
@@ -21,11 +47,11 @@ class Navbar extends React.Component {
 
                 <CustomNavbar 
                     NavHeader={self.props.NavHeader}
-                    RBSymbol={<Hamburger />}
+                    RBSymbol={this.props.RBSymbol || <Hamburger />}
                     RBAria={self.props.RBAria}
                     RBStyle={self.props.RBStyle}
                     RBAction={self.props.RBAction}
-                    LBSymbol={<Menu />}
+                    LBSymbol={this.props.LBSymbol || <Menu />}
                     LBAria={self.props.LBAria}
                     LBStyle={self.props.LBStyle}
                     LBAction={self.props.LBAction}
@@ -54,14 +80,14 @@ export default Navbar;
 const CustomNavbar = (props) => {
     return(
         <ul className="nav nav-tabs nav-justified"style={{width: "100%", color: "white", marginTop: 10}}>
-          <div className="text-left"style={{width: "30%", display: "inline-block", float:"left"}}>
-            <li onClick={props.LBAction}>{props.LBSymbol}</li>
+          <div className="text-left"style={Object.assign({}, {width: "30%", display: "inline-block", float:"left"},props.LBStyle )}>
+            <li id="LBSymbol" onClick={props.LBAction}>{props.LBSymbol}</li>
           </div>
           <div className="text-center" style={{width: "30%", display: "inline-block"}}>
             <li style={{fontSize: 25, marginTop: 1}}>{props.NavHeader}</li>
           </div>
-          <div className="text-right" style={{width: "30%", display: "inline-block", float: "right"}}>
-            <li onClick={props.RBAction}>{props.RBSymbol}</li> 
+          <div className="text-right" style={Object.assign({}, {width: "30%", display: "inline-block", float: "right"}, props.RBStyle)}>
+            <li id="RBSymbol"  onClick={props.RBAction}>{props.RBSymbol}</li> 
           </div>
         </ul>
     )

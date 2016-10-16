@@ -9,9 +9,8 @@ import style from "./homeStyle.js";
 import Navbar from "../../component_utils/Navbar";
 import Loading from "../../component_utils/Loading";
 import SearchBar from "../../component_utils/SearchBar";
-import FloatingButton from "../../component_utils/FloatingButton";
+import SpeechDialog from "../../component_utils/SpeechDialog";
 import {Link } from "react-router";
-
 
 class Home extends React.Component {
     constructor(props) {
@@ -23,6 +22,9 @@ class Home extends React.Component {
         	showRightNavbar: false
         }
     }
+    componentDidMount() {
+        window.speechSynthesis.pause()               
+    }
     update(){
         var width = $(window).width();
         this.setState({width: width})
@@ -31,14 +33,19 @@ class Home extends React.Component {
         this.props.fetchNewsOnce();
         this.props.fetchNewsLoop();
         window.addEventListener("resize", this.update.bind(this))
-        this.update.call(this)
+        this.update.call(this);
     }
     componentWillUnmount() {
-    	this.props.stopFetching();
+    	this.props.stopFetching(); 
+        this.props.unmountNews(); //clear the state
     }
     componentWillUpdate(nextProps, nextState) {
         // if()
     }
+    _onSearchBarChange(word){
+        this.props.filterNews(this.props.news_reducers, word);
+    }
+  
     render() {
     	const props = this.props;
         const state = this.state;
@@ -48,21 +55,27 @@ class Home extends React.Component {
             return(<div><Navbar /> <Loading /></div>)
         }
         const filtered = props.filteredNews || props.news_reducers
-        const newsLoop = filtered.map((n,index) => {
-            if(index === 0) return(<Card key={n.id} news={n}/>)
-            return(
-                <Media key={n.id} news={n}/>
-            )
+        const newsLoop = !Array.isArray(filtered) ? [] : filtered.sort((a,b) => {
+            return b.id - a.id
         })
+        .map((n,index) => {
+            if(index === 0) return(<Card key={index} news={n}/>)
+            return(
+                <Media key={index} news={n}/>
+            )
+        });
         return (
         	<div>
-        		<Navbar />
+        		<Navbar 
+                    LBSymbol={<span className="brand">JPost</span>}
+                    RBStyle={{visibility: "hidden"}}
+                    />
         		<main className="container" 
+                      onClick={() => this.setState({showRightNavbar: false})}
                       style={style.main_container}>
-                    <SearchBar />
-                    <FloatingButton />
+                    <SearchBar onChange={this._onSearchBarChange.bind(this)}/>
+                    <SpeechDialog />
                     {newsLoop}
-                    home
         		</main>
         	</div>
         );
@@ -79,15 +92,15 @@ const Card = (props) => {
     const news = props.news;
     return(
     <article className="card">
-      <Link to={"/article/?"+news.url} style={{color: "black"}}>
-          <div className="card-block">
-            <h4 className="card-title text-center">{news.title}</h4>
-          </div>
-          <div className="card-block">
-               <img style={style.main_header_image} src={news.img.src} alt={news.img.alt} />
-          </div>
-          <div className="card-block">
-            <p className="card-text">{news.description}</p>
+      <Link to={"/article/"+news.id} style={{color: "black"}}>
+      
+          <div className="card-block" style={{position: "relative"}}>
+                <div className="row text-inverse" style={{position: "absolute", width: "100%", left: 20, bottom: 10}}>
+                <h4 className="card-title">{news.title}</h4>
+
+                <p className="card-text">{news.description}</p>
+                </div>
+                <img style={style.main_header_image} src={news.image.src} alt={news.image.alt} />
           </div>
       </Link>
     </article>
@@ -98,7 +111,7 @@ const Media = (props) => {
     const news = props.news
     return(
         <article className="media">
-            <Link to={"/article/?"+news.url} style={{color: "black"}}>
+            <Link to={"/article/"+news.id} style={{color: "black"}}>
               <div className="media-left">
                 <img className="media-object" style={style.media_object} src={news.img.src} alt={news.img.alt} />
               </div>

@@ -8,6 +8,7 @@ import reducers from "./reducers/index";
 
 //pages
 import Home from "./component_pages/Home/Home";
+import Article from "./component_pages/Article/Article";
 import NoMatch from "./component_pages/NoMatch/NoMatch";
 //css
 import './index.css';
@@ -19,6 +20,7 @@ ReactDOM.render(
 	<Provider store={store}>
 	   	<Router history={browserHistory} >
 	   		<Route path="/" component={Home} />
+	   		<Route path="/article/:id" component={Article} />
 			<Route path="*" component={NoMatch}/>
 	  	</Router>
 	</Provider>

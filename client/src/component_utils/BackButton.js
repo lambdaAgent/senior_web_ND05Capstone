@@ -8,10 +8,15 @@ import {browserHistory} from "react-router";
 	style: object
 
 */
-
+const defaultStyle = {
+	marginBottom: 40,
+	cursor: "pointer",
+	fontSize: 25
+}
 const BackButton = (props) => (
-	<button className="btn btn-primary" 
-	        style={Object.assign({}, {marginBottom: 40 }, props.style)  }
+	<span   id="backButton"
+			tabIndex="0"
+	        style={Object.assign({}, defaultStyle, props.style)  }
 	        onClick={ () => browserHistory.goBack() }
 	        onKeyDown={(e) => {
 	        	if(e.keyCode === 13 || e.keyCode ===32){
@@ -19,7 +24,7 @@ const BackButton = (props) => (
 	        	}
 	        }}
 	        >{"< Back"}
-	        </button>
+	        </span>
 )
 
 export default BackButton;

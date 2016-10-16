@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var scrapNews = require("../../scrap/scrapNews");
-var scrapArticle = require("../../scrap/scrapArticle");
+var scrapNews = require("../scrap/scrapNews");
+var scrapArticle = require("../scrap/scrapArticle");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,6 +10,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get("/news", (req, res, next) => {
+	console.log('get news')
 	scrapNews()
 	.then(news => {
 		res.json(news)
