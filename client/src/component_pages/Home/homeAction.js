@@ -14,6 +14,7 @@ const Action = (dispatch) => ({
     _fetchLoop: undefined,
     filterNews(news, word){
       var result;
+      word = word.toLowerCase();
       result = news.filter(n => n.title.toLowerCase().indexOf(word) > -1 || n.description.toLowerCase().indexOf(word) > -1);
       if(word === "") result = news;
       dispatch({type: "FILTER_NEWS", payload: result})
@@ -62,6 +63,7 @@ function fetchNews(url, dispatch, stopFetching){
                   //dispatch news from server
                   dispatch({type:"GET_NEWS", payload: news});
               })
+             .catch(err => console.error(err))
              
           } 
           
@@ -76,8 +78,8 @@ function fetchNews(url, dispatch, stopFetching){
         .then(arr => {
           //dispatch news from server
           dispatch({type:"GET_NEWS", payload: news});
-
         })
+        .catch(err => console.error(err))
     })
     .catch(err => {
       //stop fetching

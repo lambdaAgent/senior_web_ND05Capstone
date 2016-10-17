@@ -75,14 +75,18 @@ class Home extends React.Component {
                         <div>
                             <SearchBar onChange={this._onSearchBarChange.bind(this)}/>
                         </div>
-                    }
-                    />
+                    }/>
         		<main className="container" 
                       onClick={() => this.setState({showRightNavbar: false})}
-                      style={style.main_container}>
-                    
+                      style={style.main_container}>                  
                     {newsLoop}
         		</main>
+                 <SpeechDialog 
+                    generateSpeech={generateSpeech}
+                    generateCommand={generateCommand}
+                    guideContent={"Voice Commands available for this page are: \n %Search (any word) \n %clear search \n %select headline \n Hint: 'search (word)', then 'select' it"}
+                    firstElementFocus={$("#hamburger")}
+                />  
         	</div>
         );
     }
@@ -96,19 +100,30 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Home);
 // =========
 //   LOGIC
 // =========
-function generateCommand(localComponent){
+var generateCommand = (localComponent) =>{
+    var props = HomeProps;
     return {
-        'read *word'(word){
-            console.log("read")
-            localComponent._readArticle.call(localComponent, word)
+        'search *word'(word){
+            var speech = generateSpeech(word);
+            if( speech.indexOf("found nothing") < 0 ){
+                props.filterNews(props.news_reducers, word);
+            }
+            localComponent._readArticle.call(localComponent, speech)
         },
-        "go back"(){
-            $("#backButton").click();
+        'clear search'(){
+            var speech = "clear search";
+            props.filterNews(props.news_reducers, "");
+            localComponent._readArticle.call(localComponent, speech)
+        },
+        "select one"(){
+            console.log("select")
+            console.log($("#headline"))
+            $("#headline")[0].click();
         }
     }
 }
 
-const ExtraButton = (props) => {
+var ExtraButton = (props) => {
     
     return(
         <div style={{display: "inline"}}>
@@ -118,15 +133,17 @@ const ExtraButton = (props) => {
     )
 }
 
-const generateSpeech = (word) => {
+var generateSpeech = (word) => {
     var props = HomeProps;
+    var news = props.news_reducers;
     var speech;
-    if(word === "title"){
-        var intro = "the title of this article is: "
-        speech = intro + props.article.title + "\n"
-    } else if (word === "article"){
-        var intro = "the article is: "
-        speech = intro + props.article.body
-    } 
+    word = word.toLowerCase();
+    var result = news.filter(n => n.title.toLowerCase().indexOf(word) > -1 || n.description.toLowerCase().indexOf(word) > -1);
+    if(result.length <= 0){
+        speech = "search found nothing"
+    } else {
+        speech = "search found " + result.length + "news. \n"
+    }
+
     return speech;
 }

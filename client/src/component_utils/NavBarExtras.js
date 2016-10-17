@@ -11,6 +11,7 @@ const Menu = (props) => (
 
 const Hamburger = (props) => (
       <button type="button" className="btn btn-lg btn-default" 
+              id="hamburger"
               style={{background: "none", border:"none", color:"white"}} 
               aria-label="toggle menu"
               onClick={props.RBAction}>

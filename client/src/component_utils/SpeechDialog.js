@@ -7,15 +7,19 @@ class SpeechDialog extends React.Component {
 	constructor(props){
 		super(props);
 		var dialogContent = "Press '?' to show available commands";
-		var guideContent= "Voice Commands available for this page are: \n %Go back \n %Read Title \n %Read article."
-		this.state = { showDialog: true, listening: false, reading: false, 
+		var guideContent= props.guideContent;
+		this.state = { showDialog: false, listening: false, reading: false, 
 			           dialogContent: dialogContent ,
 			           guideContent: guideContent,
 			           showContent: dialogContent
 			       }
 	}
+	_offline(e){
+		this.setState({listening:false, dialogContent: this.state.dialogContent+= "\n speech recognizer is not ready, you could be offline"})
+	}
 	componentDidMount() {
 		window.speechSynthesis.cancel()
+		window.addEventListener("offline", this._offline.bind(this))
 	}
 	componentWillUnmount() {
 		window.speechSynthesis.cancel()
@@ -71,12 +75,12 @@ class SpeechDialog extends React.Component {
 
 		this.setState(Object.assign({}, state,{showContent: this.state.dialogContent}));
 		window.speechSynthesis.speak(msg);
-		$("#panel-body")[0].scrollTop($('#panel-body')[0].scrollHeight);
+		// $("#panel-body").scrollTop($('#panel-body').position().top);
 	}
 	render(){
 		const props = this.props;
 		const content = props.content || <span className="fa fa-microphone" style={glyphicon}></span>
-		const ExtraButton = this.props.extraButton || ""
+		const ExtraButton = this.props.extraButton || undefined;
 		return(
 			<div>
 				<panel style={{width: 320, display: this.state.showDialog ? "inherit" : "none",
@@ -88,16 +92,19 @@ class SpeechDialog extends React.Component {
 					   		<div style={{display:"inline-block", width: "50%"}}> 
 						   		<FooterButton 
 								    clickState={this.state.speaking}
+								    aria-label="guide"
 								    style={{backgroundColor: "inherit", margin:"0 0"}}
 									content={<span className="fa fa-question" style={{fontSize: 30}}></span>}
 									onClick={this._guideClick.bind(this)} />
 							</div>
 							<div style={{display: "inline-block", position:"absolute", right: 10}}>
-								
-								<ExtraButton 
-									onClick1={this._readArticle.bind(this, "title")}
-									onClick2={this._readArticle.bind(this, "article")}
-								/>
+								{(ExtraButton) ?
+									<ExtraButton 
+										onClick1={this._readArticle.bind(this, "title")}
+										onClick2={this._readArticle.bind(this, "article")}
+									/> 
+								: ""
+								}
 
 							<CloseButton 
 								onClick={this._closeDialog.bind(this)}
@@ -122,13 +129,13 @@ class SpeechDialog extends React.Component {
 						    	// tab button is trapped to hidden element after this, manually contruct it
 						    	// <SpeechDialog />						 must be the last element in every page
 					  		 	<FooterButton 
-					  		 		clickState={true}
+					  		 		clickState={true} aria-label="stop speaking"
 					  		 		onKeyDown={ (e) => (e.target.keyCode === 9) ? this.props.firstElementFocus.focus() : "" }
 									content={<span className="fa fa-stop" style={{fontSize: 30}}></span>}
 									onClick={this._stopSpeaking.bind(this)} />
 						    		:
 								<FooterButton 
-									clickState={this.state.listening}
+									clickState={this.state.listening} aria-label="start listening"
 					  		 		onKeyDown={ (e) => (e.target.keyCode === 9) ? this.props.firstElementFocus.focus() : "" }
 									content={<span className="fa fa-microphone" style={{fontSize: 30}}></span>}
 									onClick={this._listenClick.bind(this)} />
@@ -160,7 +167,7 @@ const FooterButton = (props) => {
 		// const props = this.props;
 		return(
 		<button 
-			tabIndex="0"
+			tabIndex="0" aria-label={props["aria-label"]}
 		    onClick={props.onClick} onKeyDown={props.onKeyDown}
 		    style={Object.assign({}, {backgroundColor: props.clickState ? "#F44336" : "gray",
 		    	    color: props.clickState ? "white" : "inherit",

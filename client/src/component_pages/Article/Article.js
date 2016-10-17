@@ -59,7 +59,7 @@ class Home extends React.Component {
                     <SpeechDialog 
                         generateSpeech={generateSpeech}
                         generateCommand={generateCommand}
-                        extraButton={ExtraButton}
+                        guideContent={"Voice Commands available for this page are: \n %Go back \n %Read Title \n %Read article."}
                         firstElementFocus={$("#backButton")}
                         />
         		</main>
@@ -115,8 +115,8 @@ const ExtraButton = (props) => {
     
     return(
         <div style={{display: "inline"}}>
-            <button onClick={props.onClick1}>read title</button>
-            <button onClick={props.onClick2}>read article</button>
+            <button className="btn btn-primary" onClick={props.onClick1}>read title</button>
+            <button className="btn btn-primary" onClick={props.onClick2}>read article</button>
         </div>
     )
 }

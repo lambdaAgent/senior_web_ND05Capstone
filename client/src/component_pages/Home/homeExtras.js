@@ -7,7 +7,7 @@ const Card = (props) => {
     const news = props.news;
     return(
     <article className="card">
-      <Link to={"/article/"+news.id} style={{color: "black"}}>
+      <Link to={"/article/"+news.id} style={{color: "black"}} id="headline">
       
           <div className="card-block" style={{position: "relative"}}>
                 <div className="row text-inverse" style={{position: "absolute", width: "100%", left: 20, bottom: 10}}>

@@ -117,7 +117,7 @@ const dropdownStyle={
 
 //leftBar is usually a logo, link to home page
 var CollapsedMenuLeft = (props) => (
-  <div className="navbar-inverse no_active" id="Hamburger-Menu" 
+  <div className="navbar-inverse no_active" id="Left-Menu" 
          style={Object.assign({}, {marginTop: 0, display: props.showLeftMenu ? "inherit" :"none"})}>
       <ul className="dropdown" style={dropdownStyle}>
           {props.content}
