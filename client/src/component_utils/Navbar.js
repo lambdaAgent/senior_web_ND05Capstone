@@ -1,8 +1,8 @@
 import React from 'react';
 const $ = require("jquery");
 
-import { Link , browserHistory} from 'react-router';
-
+import { Link } from 'react-router';
+import { Menu, Hamburger} from "./NavBarExtras";
 /*
   this navbar can contain three child components:
   Elements:
@@ -32,7 +32,6 @@ import { Link , browserHistory} from 'react-router';
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {width: 0, url: ""};
     }  
 
     render() {
@@ -98,24 +97,6 @@ const CustomNavbar = (props) => {
   //     style={Object.assign({}, {fontSize: "25px"}, props.RBStyle)}
   //     >{props.RBSymbol} right</li>
 
-const Menu = (props) => (
-      <button type="button" className="btn btn-lg btn-default" 
-              style={{background: "none", border:"none", color:"white"}} 
-              aria-label="toggle menu"
-              onClick={props.LBAction}>
-        <i className="glyphicon glyphicon-cog" style={{fontSize: 25}}></i>
-      </button>     
-)
-
-const Hamburger = (props) => (
-      <button type="button" className="btn btn-lg btn-default" 
-              style={{background: "none", border:"none", color:"white"}} 
-              aria-label="toggle menu"
-              onClick={props.RBAction}>
-        <i className="glyphicon glyphicon-menu-hamburger" style={{fontSize: 25}}></i>
-      </button>     
-)
-
 var CollapsedMenuRight = (props) => (
   <div className="navbar-inverse no_active" id="Hamburger-Menu" 
          style={Object.assign({}, {marginTop: 0, display: props.showRightMenu ? "inherit" :"none"})}>
@@ -135,9 +116,7 @@ const dropdownStyle={
   fontSize:20, margin:10, textAlign:"left", marginLeft:10
 }
 
-
-
-
+//leftBar is usually a logo, link to home page
 var CollapsedMenuLeft = (props) => (
   <div className="navbar-inverse no_active" id="Hamburger-Menu" 
          style={Object.assign({}, {marginTop: 0, display: props.showLeftMenu ? "inherit" :"none"})}>

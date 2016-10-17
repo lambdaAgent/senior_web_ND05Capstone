@@ -28,7 +28,11 @@ class SpeechDialog extends React.Component {
 		this.setState({showDialog: true})
 	}
 	_guideClick(e){
-		this.setState({showContent: this.state.guideContent}) 
+		if(this.state.showContent === this.state.dialogContent){
+			this.setState({showContent: this.state.guideContent}) 
+		} else if (this.state.showContent === this.state.guideContent){
+			this.setState({showContent: this.state.dialogContent})
+		}
 	}
 	_listenClick(e){
 		if(!window.annyang) {
@@ -36,7 +40,7 @@ class SpeechDialog extends React.Component {
 			this.setState({dialogContent: this.state.dialogContent+= "\n speech recognizer is not ready, you could be offline"})
 			return;
 		}
-
+		if(this.state.listening === true) return undefined;
 		var msg = createReadableMessage("listening");
 		msg.onend = (e) => {
 			//this will start after speech is end, this is a callback
@@ -45,7 +49,7 @@ class SpeechDialog extends React.Component {
 		}
 		//say "listening"
 		window.speechSynthesis.speak(msg)
-		this.setState({dialogContent: this.state.dialogContent+= "\n listening..."})
+		this.setState({listening: true, dialogContent: this.state.dialogContent+= "\n listening..."})
 		//annyang.start
 
 	}
@@ -59,21 +63,15 @@ class SpeechDialog extends React.Component {
         if(word === "title"){
             speech = this.props.titleContent
         } else if (word === "article"){
-            speech = this.props.bodyContent
+            speech = "the article is asdfasdfasfasdfasfd"
         } 
 
         if(!speech) return undefined;
         var msg = createReadableMessage(speech, this);
-        this._startSpeak.call(this, msg, {dialogContent: this.state.dialogContent += `\n ${speech}`})
-    }
-    _startSpeak(word, stateObject){
-		window.speechSynthesis.speak(word)
-		var state = {listening: false, reading: true}
-		if(stateObject){
-			state = Object.assign({}, state, stateObject)
-		}
+		var state = {listening: false, reading: true, dialogContent: this.state.dialogContent += `\n ${speech}`};
 
 		this.setState(Object.assign({}, state,{showContent: this.state.dialogContent}));
+		window.speechSynthesis.speak(msg)
 	}
 	render(){
 		const props = this.props;
@@ -199,19 +197,22 @@ function startAnnyang(annyang,React, commands){
 			    }
 			};
 		}
-
+		//only addCallback if there is no callback yet
         // annyang.addCallback('start', function() {
         //     console.log("ANNYANG HAS STARTED")
         // })
+
         annyang.addCallback('result', function(phrases) {
         	var dialog = React.state.dialogContent + `\n I think you might said: % ${phrases[0]}` + `\n But then again, it could be any of the following: % ${phrases} \n`;
         	React.state.dialogContent = dialog
         	React.setState({showContent: React.state.dialogContent  })
         });
         annyang.addCallback('end', function() {
+        	annyang.removeCallback('result')
+        	annyang.removeCallback('end')
             React.setState({listening: false})
         })
-        
+
         //attach commands	
         annyang.addCommands(commands);
         // Start listening;
@@ -230,11 +231,10 @@ function startAnnyang(annyang,React, commands){
     msg.text = text;
     // msg.lang = 'en-GB';
     msg.onstart = function(event) {
-	    console.log('We have started uttering this speech: ' + event.utterance.text);
-	  }
+    }
 
  	msg.onend = function () {
- 		if(React) React.setState({reading: false});
+ 		React.setState({reading: false});
 	}
     return msg
 }

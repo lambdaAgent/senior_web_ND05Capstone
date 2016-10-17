@@ -13,6 +13,7 @@ import SpeechDialog from "../../component_utils/SpeechDialog";
 import BackButton from "../../component_utils/BackButton";
 import {Link } from "react-router";
 
+var HomeProps;
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -41,9 +42,7 @@ class Home extends React.Component {
     render() {
     	const props = this.props;
         const state = this.state;
-        var extraCommand = {
-            goBack:this._goBack.bind(this)
-        };
+        HomeProps = props
         //if no news, show loading
         if(!props.article){
             return(<div><Navbar /> <Loading /></div>)
@@ -58,10 +57,9 @@ class Home extends React.Component {
                       style={{}}>
                       <Card news={props.article}/>
                     <SpeechDialog 
-                        helpContent={generateCommandForSpeech()}
-                        titleContent={generateContentForSpeech(this.props.article)}
-                        bodyContent={generateBodyForSpeech(this.props.article)}
-                        extraCommand={extraCommand}
+                        parentComponent={this}
+                        generateSpeech={generateSpeech}
+                        generateCommand={generateCommand}
                         firstElementFocus={$("#backButton")}
                         />
         		</main>
@@ -72,7 +70,7 @@ class Home extends React.Component {
 
 const mapStateToProps =  ({article}) => article ;
 const mapDispatchToProps = ArticleAction;
-
+console.log(Home)
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Home);
 
 
@@ -96,17 +94,39 @@ const Card = (props) => {
     );
 }
 
-function generateCommandForSpeech(){
-    var commands = "back (to main page)... \n read title... \n read content...";
-    return (commands)
+
+// =========
+//   LOGIC
+// =========
+function generateCommand(thisComponent, localComponent){
+    return {
+        'read *word'(word){
+            localComponent._readArticle.call(localComponent, word)
+        },
+        "go back"(){
+            thisComponent._goBack.bind(thisComponent)
+        }
+    }
 }
 
-function generateContentForSpeech(article){
-    var msg = `the title of this article is,  ${article.title}`
-    return (msg)
+const ExtraButton = (props) => {
+    
+    return(
+        <div>
+
+        </div>
+    )
 }
 
-function generateBodyForSpeech(article){
-    var msg = `the article is: ${article.body}`;
-    return (msg)
+const generateSpeech = (word) => {
+    var props = HomeProps;
+    var speech;
+    if(word === "title"){
+        var intro = "the title of this article is: "
+        speech = intro + props.article.title + "\n"
+    } else if (word === "article"){
+        var intro = "the article is: "
+        speech = intro + props.article.body
+    } 
+    return speech;
 }
