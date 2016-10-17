@@ -17,7 +17,15 @@ This app will scrap news from <a href="http://www.jakartapost.com">jakartapost</
    * `$ cd client/build`
    * `$ python -m SimpleHTTPServer *port*`
 
-# LifeCycle:
+# Speech Dialog 
+1. This web app accepts voice commands,
+2. Press the microfone to open speechDialog
+3. Press "?" to show available voice commands
+4. Press "x" to close
+5. Press "microfone" again to start listening, 
+6. After the button turn red, try to speak any word, or follow the commands in "?"
+
+# LifeCycle of the app:
 1. When the app is launched, the app will begin to cache all the basic files (exclude database) using serviceWorker.
 2. After app is ready to mount (willMount), react-redux will tell the server to scrap the data from <a href="http://www.jakartapost.com">jakartapost</a>, and serve it to client.
 3. When these data are in client side, they will be stored to indexedDb.

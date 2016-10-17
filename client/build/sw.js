@@ -27,14 +27,30 @@ this.addEventListener("install", event => {
 				"/library/bootstrap/fonts/glyphicons-halflings-regular.ttf",
 				"/library/bootstrap/fonts/glyphicons-halflings-regular.woff",
 				"/library/bootstrap/fonts/glyphicons-halflings-regular.woff2",	
-				// "/static/css/main.0f7b0d61.css",
-				// "/static/css/main.0f7b0d61.css.map",
-				// "/static/js/main.41df621d.js",
-				// "/static/js/main.41df621d.js.map",
+				"/static/css/main.0f7b0d61.css",
+				"/static/css/main.0f7b0d61.css.map",
+				"/static/js/main.c119781c.js",
+				"/static/js/main.c119781c.js.map",
 							
 				// ---- images -------
-				// "/images/Caltrain_Zone_Map.png",
-				
+				"/media/icons/167x167.png",
+				"/media/icons/168x168.png",
+				"/media/icons/60x60.png",
+				"/media/icons/GooglePlayStore.png",
+				"/media/icons/Icon-60@2x.png",
+				"/media/icons/Icon-60@3x.png",
+				"/media/icons/Icon-72.png",
+				"/media/icons/Icon-72@2x.png",
+				"/media/icons/Icon-76.png",
+				"/media/icons/Icon-76@2x.png",
+				"/media/icons/Icon-Small-50.png",
+				"/media/icons/Icon-Small-50@2x.png",
+				"/media/icons/Icon-Small@2x.png",
+				"/media/icons/hdpi.png",
+				"/media/icons/mdpi.png",
+				"/media/icons/xhdpi.png",
+				"/media/icons/xxhdpi.png",
+				"/media/icons/xxxhdpi.png",	
 			])
 		})
 	)
