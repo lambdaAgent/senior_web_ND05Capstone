@@ -10,8 +10,9 @@ import Navbar from "../../component_utils/Navbar";
 import Loading from "../../component_utils/Loading";
 import SearchBar from "../../component_utils/SearchBar";
 import SpeechDialog from "../../component_utils/SpeechDialog";
-import {Link } from "react-router";
+import {Card, Media} from "./homeExtras"
 
+var HomeProps;
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -47,7 +48,7 @@ class Home extends React.Component {
     }
   
     render() {
-    	const props = this.props;
+    	const props = HomeProps = this.props;
         const state = this.state;
         style.initWidth(state.width);
         //if no news, show loading
@@ -68,13 +69,18 @@ class Home extends React.Component {
         	<div>
         		<Navbar 
                     LBSymbol={<span className="brand">JPost</span>}
-                    RBStyle={{visibility: "hidden"}}
+                    showRightMenu={this.state.showRightNavbar}
+                    RBAction={() => this.setState({showRightNavbar: !this.state.showRightNavbar})}
+                    CollapsedRightMenuContent={
+                        <div>
+                            <SearchBar onChange={this._onSearchBarChange.bind(this)}/>
+                        </div>
+                    }
                     />
         		<main className="container" 
                       onClick={() => this.setState({showRightNavbar: false})}
                       style={style.main_container}>
-                    <SearchBar onChange={this._onSearchBarChange.bind(this)}/>
-                    <SpeechDialog />
+                    
                     {newsLoop}
         		</main>
         	</div>
@@ -87,39 +93,40 @@ const mapDispatchToProps = homeAction;
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Home);
 
-
-const Card = (props) => {
-    const news = props.news;
-    return(
-    <article className="card">
-      <Link to={"/article/"+news.id} style={{color: "black"}}>
-      
-          <div className="card-block" style={{position: "relative"}}>
-                <div className="row text-inverse" style={{position: "absolute", width: "100%", left: 20, bottom: 10}}>
-                <h4 className="card-title">{news.title}</h4>
-
-                <p className="card-text">{news.description}</p>
-                </div>
-                <img style={style.main_header_image} src={news.image.src} alt={news.image.alt} />
-          </div>
-      </Link>
-    </article>
-    );
+// =========
+//   LOGIC
+// =========
+function generateCommand(localComponent){
+    return {
+        'read *word'(word){
+            console.log("read")
+            localComponent._readArticle.call(localComponent, word)
+        },
+        "go back"(){
+            $("#backButton").click();
+        }
+    }
 }
 
-const Media = (props) => {
-    const news = props.news
+const ExtraButton = (props) => {
+    
     return(
-        <article className="media">
-            <Link to={"/article/"+news.id} style={{color: "black"}}>
-              <div className="media-left">
-                <img className="media-object" style={style.media_object} src={news.img.src} alt={news.img.alt} />
-              </div>
-              <div className="media-body">
-                <h4 className="media-heading">{news.title}</h4>
-                {news.description}
-              </div>
-            </Link>
-        </article>
+        <div style={{display: "inline"}}>
+            <button onClick={props.onClick1}>read title</button>
+            <button onClick={props.onClick2}>read article</button>
+        </div>
     )
+}
+
+const generateSpeech = (word) => {
+    var props = HomeProps;
+    var speech;
+    if(word === "title"){
+        var intro = "the title of this article is: "
+        speech = intro + props.article.title + "\n"
+    } else if (word === "article"){
+        var intro = "the article is: "
+        speech = intro + props.article.body
+    } 
+    return speech;
 }

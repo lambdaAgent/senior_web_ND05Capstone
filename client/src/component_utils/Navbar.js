@@ -57,10 +57,11 @@ class Navbar extends React.Component {
                   />
                   <CollapsedMenuRight 
                       showRightMenu={this.props.showRightMenu}
+                      content={this.props.CollapsedRightMenuContent}
                   />
                    <CollapsedMenuLeft 
                       showLeftMenu={this.props.showLeftMenu}
-                      content={this.props.CollapsedMenuLeftContent}
+                      content={this.props.CollapsedLeftMenuContent}
                   />
             </div>        
 			    </nav>
@@ -99,11 +100,9 @@ const CustomNavbar = (props) => {
 
 var CollapsedMenuRight = (props) => (
   <div className="navbar-inverse no_active" id="Hamburger-Menu" 
-         style={Object.assign({}, {marginTop: 0, display: props.showRightMenu ? "inherit" :"none"})}>
-      <ul className="dropdown">
-          <li><Link style={dropdownStyle} to="/">Geospatial</Link></li>
-          <li><Link style={dropdownStyle} to="/keymetric">KeyMetric</Link></li>
-          <li><Link style={dropdownStyle} to="/dataview">DataView</Link></li>
+         style={Object.assign({}, {marginTop: 10, display: props.showRightMenu ? "inherit" :"none"})}>
+      <ul className="dropdown" style={{padding: 0}}>
+         {props.content}
       </ul>
     </div>    
 )

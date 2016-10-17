@@ -37,7 +37,7 @@ class Home extends React.Component {
     }
    
     _goBack(){
-        $("#backButton").click();
+        
     }
     render() {
     	const props = this.props;
@@ -57,9 +57,9 @@ class Home extends React.Component {
                       style={{}}>
                       <Card news={props.article}/>
                     <SpeechDialog 
-                        parentComponent={this}
                         generateSpeech={generateSpeech}
                         generateCommand={generateCommand}
+                        extraButton={ExtraButton}
                         firstElementFocus={$("#backButton")}
                         />
         		</main>
@@ -70,7 +70,6 @@ class Home extends React.Component {
 
 const mapStateToProps =  ({article}) => article ;
 const mapDispatchToProps = ArticleAction;
-console.log(Home)
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Home);
 
 
@@ -98,13 +97,16 @@ const Card = (props) => {
 // =========
 //   LOGIC
 // =========
-function generateCommand(thisComponent, localComponent){
+function generateCommand(localComponent){
     return {
         'read *word'(word){
-            localComponent._readArticle.call(localComponent, word)
+            var speech = generateSpeech(word);
+            //let localComponent, read this speech, and maintain the lifeCycle of each button
+            
+            localComponent._readArticle.call(localComponent, speech);
         },
         "go back"(){
-            thisComponent._goBack.bind(thisComponent)
+            $("#backButton").click();
         }
     }
 }
@@ -112,8 +114,9 @@ function generateCommand(thisComponent, localComponent){
 const ExtraButton = (props) => {
     
     return(
-        <div>
-
+        <div style={{display: "inline"}}>
+            <button onClick={props.onClick1}>read title</button>
+            <button onClick={props.onClick2}>read article</button>
         </div>
     )
 }
@@ -121,6 +124,7 @@ const ExtraButton = (props) => {
 const generateSpeech = (word) => {
     var props = HomeProps;
     var speech;
+    console.log("word", word)
     if(word === "title"){
         var intro = "the title of this article is: "
         speech = intro + props.article.title + "\n"

@@ -1,4 +1,5 @@
 import React from "react";
+const $ = require("jquery");
 
 import FloatingButton from "./FloatingButton";
 
@@ -40,11 +41,15 @@ class SpeechDialog extends React.Component {
 			this.setState({dialogContent: this.state.dialogContent+= "\n speech recognizer is not ready, you could be offline"})
 			return;
 		}
-		if(this.state.listening === true) return undefined;
+		if(this.state.listening === true) {
+			window.annyang.abort();
+			this.setState({listening: false, reading:false});
+			return
+		}
 		var msg = createReadableMessage("listening");
 		msg.onend = (e) => {
 			//this will start after speech is end, this is a callback
-			startAnnyang(window.annyang, this)
+			startAnnyang(window.annyang, this, this.props.generateCommand(this))
 			this.setState({listening: true, reading: false});
 		}
 		//say "listening"
@@ -58,25 +63,20 @@ class SpeechDialog extends React.Component {
 		//also when speech hs finished reading, setState speaking to false
 		this.setState({reading: false})
 	}
-	_readArticle(word){
-        var speech;
-        if(word === "title"){
-            speech = this.props.titleContent
-        } else if (word === "article"){
-            speech = "the article is asdfasdfasfasdfasfd"
-        } 
+	_readArticle(speech){
 
         if(!speech) return undefined;
         var msg = createReadableMessage(speech, this);
 		var state = {listening: false, reading: true, dialogContent: this.state.dialogContent += `\n ${speech}`};
 
 		this.setState(Object.assign({}, state,{showContent: this.state.dialogContent}));
-		window.speechSynthesis.speak(msg)
+		window.speechSynthesis.speak(msg);
+		$("#panel-body")[0].scrollTop($('#panel-body')[0].scrollHeight);
 	}
 	render(){
 		const props = this.props;
 		const content = props.content || <span className="fa fa-microphone" style={glyphicon}></span>
-		
+		const ExtraButton = this.props.extraButton || ""
 		return(
 			<div>
 				<panel style={{width: 320, display: this.state.showDialog ? "inherit" : "none",
@@ -93,8 +93,11 @@ class SpeechDialog extends React.Component {
 									onClick={this._guideClick.bind(this)} />
 							</div>
 							<div style={{display: "inline-block", position:"absolute", right: 10}}>
-							<button onClick={this._readArticle.bind(this, "title") }>read title</button>
-							<button onClick={this._readArticle.bind(this, "article") }>read article</button>
+								
+								<ExtraButton 
+									onClick1={this._readArticle.bind(this, "title")}
+									onClick2={this._readArticle.bind(this, "article")}
+								/>
 
 							<CloseButton 
 								onClick={this._closeDialog.bind(this)}
@@ -184,40 +187,23 @@ module.exports = SpeechDialog;
 // -------------
 
 function startAnnyang(annyang,React, commands){
-    if (!window.annyang) return undefined;
-    	if(!commands){
-    		//if no commands provided, these are default commands available
-			commands = {
-			    'read *word'(word){
-			    	console.log("read ", word)
-			        React._readArticle.call(React, word)
-			    },
-			    'go back'(word) {
-			        React.props.extraCommand.goBack()
-			    }
-			};
-		}
-		//only addCallback if there is no callback yet
-        // annyang.addCallback('start', function() {
-        //     console.log("ANNYANG HAS STARTED")
-        // })
-
-        annyang.addCallback('result', function(phrases) {
-        	var dialog = React.state.dialogContent + `\n I think you might said: % ${phrases[0]}` + `\n But then again, it could be any of the following: % ${phrases} \n`;
-        	React.state.dialogContent = dialog
-        	React.setState({showContent: React.state.dialogContent  })
-        });
-        annyang.addCallback('end', function() {
-        	annyang.removeCallback('result')
-        	annyang.removeCallback('end')
-            React.setState({listening: false})
-        })
-
-        //attach commands	
-        annyang.addCommands(commands);
-        // Start listening;
-        window.annyang.start({ autoRestart: false , continuous:false});
-        // annyang.abort();
+	if (!window.annyang) return undefined;
+    annyang.addCallback('result', function(phrases) {
+    	var dialog = React.state.dialogContent + `\n I think you might said: % ${phrases[0]}` + `\n But then again, it could be any of the following: % ${phrases} \n`;
+    	React.state.dialogContent = dialog
+    	React.setState({showContent: React.state.dialogContent  })
+    });
+    annyang.addCallback('end', function() {
+    	annyang.removeCallback('result')
+    	annyang.removeCallback('end')
+        React.setState({listening: false})
+    })
+    console.log(commands)
+    //attach commands	
+    annyang.addCommands(commands);
+    // Start listening;
+    window.annyang.start({ autoRestart: false , continuous:false});
+    // annyang.abort();
 }
 
 
@@ -234,6 +220,7 @@ function startAnnyang(annyang,React, commands){
     }
 
  	msg.onend = function () {
+ 		console.log("finished speaking")
  		React.setState({reading: false});
 	}
     return msg
