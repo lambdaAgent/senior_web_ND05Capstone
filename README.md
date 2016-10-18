@@ -1,5 +1,5 @@
-# Project05 - JakartaPost with Speech ###[the link here](https://jpost.herokuapp.com/)
-This app is created for the project 05Capstone for udacity senior Web FrontEnd Nanodegree.
+# Project05 - JakartaPost with Speech 
+This app [demo](https://jpost.herokuapp.com/) is created for the project 05Capstone for udacity senior Web FrontEnd Nanodegree.
 This app will scrap news from <a href="http://www.jakartapost.com">jakartapost</a> , it is a simple news viewer with extra features like: 
   1. ability for computer to read the articles
   2. if online, user is able to instruct simple voice commands,
