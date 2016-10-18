@@ -1,10 +1,11 @@
-# Project05 - JakartaPost with Speech
+# Project05 - JakartaPost with Speech ###[the link here](https://jpost.herokuapp.com/)
 This app is created for the project 05Capstone for udacity senior Web FrontEnd Nanodegree.
 This app will scrap news from <a href="http://www.jakartapost.com">jakartapost</a> , it is a simple news viewer with extra features like: 
   1. ability for computer to read the articles
   2. if online, user is able to instruct simple voice commands,
   3. if offline, the app will still be functional without voice Recognizer
 
+<img src="https://github.com/vdj4y/senior_web_ND05Capstone/blob/master/github%20images/Screen%20Shot%202016-10-18%20at%2010.32.04%20AM.png" />
 
 # HOW TO RUN:
 1. `$ git clone`
@@ -24,6 +25,8 @@ This app will scrap news from <a href="http://www.jakartapost.com">jakartapost</
 4. Press "x" to close
 5. Press "microfone" again to start listening, 
 6. After the button turn red, try to speak any word, or follow the commands in "?"
+
+<img src="https://github.com/vdj4y/senior_web_ND05Capstone/blob/master/github%20images/Screen%20Shot%202016-10-18%20at%2010.32.36%20AM.png"/>
 
 # LifeCycle of the app:
 1. When the app is launched, the app will begin to cache all the basic files (exclude database) using serviceWorker.
