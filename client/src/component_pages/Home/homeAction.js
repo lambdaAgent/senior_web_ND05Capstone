@@ -7,7 +7,8 @@ db.version(1).stores({
 
 // db.delete();
 var fetchLoop;
-var url = "http://localhost:8000/news";     
+const domain = "http://localhost:8000" || process.env.DOMAIN;
+var url = `${domain}/news`;
 
 
 const Action = (dispatch) => ({
@@ -23,11 +24,6 @@ const Action = (dispatch) => ({
     //fetching
     stopFetching(){
        clearInterval(fetchLoop)
-    },
-    fetchNewsLoop(){
-      fetchLoop = setInterval( () => {
-        this.fetchNewsOnce(url, dispatch, this.stopFetching)
-      },4000)
     },
     fetchNewsOnce(){
       fetchNews(url, dispatch, this.stopFetching)
@@ -85,22 +81,28 @@ function fetchNews(url, dispatch, stopFetching){
       //stop fetching
       stopFetching();
 
-      var cacheNews = [];//cache, to be sent to reducers
-      Dexie.getDatabaseNames( (databaseNames) => {
-          if (databaseNames.length === 0) {
-              // No databases at this origin as we know of.
-              return console.log("There are no databases at current origin. Try loading another sample and then go back to this page.");
-          }
-
-          //open dexie
-          db.open();
-          return db.news.each(n => cacheNews.push(n))
-      }).then((news) => {
-          if(Array.isArray(cacheNews) && cacheNews.length > 0){
-              dispatch({type:"GET_NEWS", payload: cacheNews})
-          }
-
-          db.close();
-      })  
+      getFromDatabase(dispatch);
     });
+}
+
+
+function getFromDatabase(dispatch){
+
+  var cacheNews = [];//cache, to be sent to reducers
+  Dexie.getDatabaseNames( (databaseNames) => {
+      if (databaseNames.length === 0) {
+          // No databases at this origin as we know of.
+          return console.log("There are no databases at current origin. Try loading another sample and then go back to this page.");
+      }
+
+      //open dexie
+      db.open();
+      return db.news.each(n => cacheNews.push(n))
+  }).then((news) => {
+      if(Array.isArray(cacheNews) && cacheNews.length > 0){
+          dispatch({type:"GET_NEWS", payload: cacheNews})
+      }
+
+      db.close();
+  })  
 }

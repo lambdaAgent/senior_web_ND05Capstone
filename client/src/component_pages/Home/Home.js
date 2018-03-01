@@ -32,7 +32,7 @@ class Home extends React.Component {
     }
     componentWillMount() {
         this.props.fetchNewsOnce();
-        this.props.fetchNewsLoop();
+        
         window.addEventListener("resize", this.update.bind(this))
         this.update.call(this);
     }

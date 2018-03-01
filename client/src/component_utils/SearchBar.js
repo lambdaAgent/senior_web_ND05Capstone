@@ -23,7 +23,7 @@ class SearchBar extends React.Component {
         return(
         	<div style={{position:'relative', margin: "40px auto", marginTop:5}}>
         		<input 
-        		   name="searchbar" aria-labelledBy={this.props["aria-labelledBy"]} 
+        		   name="searchbar" aria-labelledby={this.props["aria-labelledBy"]} 
                    id="searchbar" role="search"
         		   placeholder="type to search" 
         		   list="searchs"

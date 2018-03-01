@@ -27,10 +27,10 @@ this.addEventListener("install", event => {
 				"/library/bootstrap/fonts/glyphicons-halflings-regular.ttf",
 				"/library/bootstrap/fonts/glyphicons-halflings-regular.woff",
 				"/library/bootstrap/fonts/glyphicons-halflings-regular.woff2",	
-				"/static/css/main.0f7b0d61.css",
-				"/static/css/main.0f7b0d61.css.map",
-				"/static/js/main.c119781c.js",
-				"/static/js/main.c119781c.js.map",
+				// "/static/css/main.0f7b0d61.css",
+				// "/static/css/main.0f7b0d61.css.map",
+				// "/static/js/main.41df621d.js",
+				// "/static/js/main.41df621d.js.map",
 							
 				// ---- images -------
 				"/media/icons/167x167.png",

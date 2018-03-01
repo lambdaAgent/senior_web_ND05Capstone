@@ -11,6 +11,7 @@ var log = console.log;
 function scrapNews(){
 	return new Promise((resolve, reject) => {
 		request(url, function(err, res, html) {
+			console.log('finish request')
 			if(err) return reject(err)
 
 			var $ = cheerio.load(html);
@@ -19,18 +20,18 @@ function scrapNews(){
 			var latestEntry = $(".tjp-latest-entry")[0].children.filter(child => child.name === "ul")[0];
 			latestEntry.children.filter((list, index) => {
 				// logOne(index, list)
-				return "attribs" in list && list.attribs.class.indexOf("li-child") > 0
+				return "attribs" in list && "class" in list.attribs && list.attribs.class.indexOf("li-child") > 0
 			}).map((list, index) => {
 				var singleNew = {
 					title: "",
 					url:"",
 					img: {src: "", alt: ""},
-					description: ""
+					description: "",
 				}
 				
 				list.children.map(child => {
-					if("attribs" in child && child.attribs.class === "image-latest"){
-						var img = child.children.filter(c => "name" in c && c.name === "img")[0];
+					if("attribs" in child && "class" in child.attribs && child.attribs.class === "image-latest"){
+						var img = Array.from(child.children).filter(c => "name" in c && c.name === "img")[0];
 						singleNew.img.src = img.attribs['data-src']
 						singleNew.img.alt = img.attribs['alt'];
 					}
@@ -50,6 +51,8 @@ function scrapNews(){
 								singleNew.description = c.children[0].data;
 							}
 
+							//find link
+							
 						})
 					}//.detail-latest
 				})			
@@ -65,11 +68,15 @@ function scrapNews(){
 					news[i].image = articles[i].image;
 					news[i].body = articles[i].body;
 					var day = articles[i].day + " " + articles[i].time.replace("|", "").trim();
-					news[i].id = Date.parse(day);
+					const id = articles[i].title.replace(/[^\w\s]/gi, '').slice(0,5).split('').map(letter => letter.charCodeAt(0)).join('');
+					news[i].id = Number(id);
 				}
 				resolve(news); 
 			})
-
+			.catch(err => {
+				console.log(err);
+				resolve();
+			})
 		})
 
 	});//Promise

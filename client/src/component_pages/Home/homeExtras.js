@@ -23,10 +23,11 @@ const Card = (props) => {
 }
 
 const Media = (props) => {
-    const news = props.news
+    const news = props.news;
+    const url = "/article/"+news.id;
     return(
         <article className="media">
-            <Link to={"/article/"+news.id} style={{color: "black"}}>
+            <Link to={url} style={{color: "black"}}>
               <div className="media-left">
                 <img className="media-object" style={style.media_object} src={news.img.src} alt={news.img.alt} />
               </div>

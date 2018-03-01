@@ -13,7 +13,9 @@ router.get("/news", (req, res, next) => {
 	console.log('get news')
 	scrapNews()
 	.then(news => {
-		res.json(news)
+		console.log(news);
+		res.status(200).json(news);
+		res.end();
 	})
 	.catch(err => {
 		res.status(400).json(news)
@@ -23,13 +25,15 @@ router.get("/news", (req, res, next) => {
 router.get("/article/:url", (req, res, next) => {
 	if(!req.params.url) return res.status(400)
 	var url = req.params.url;
-
+	console.log('url',url);
 	scrapArticle(url)
 	.then(article => {
-		res.json(article)
+		res.status(200).json(article);
+		res.end();
 	})
 	.catch(err => {
-		res.status(400).json(news)
+		console.log(err);
+		res.status(400).json(err)
 	})
 });
 
